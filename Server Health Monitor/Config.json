@@ -1,0 +1,22 @@
+{
+  "CpuThreshold": 80,
+  "MemoryThreshold": 80,
+  "DiskThreshold": 80,
+
+  "CriticalServices": [
+    "Spooler",
+    "DFS",
+    "LanmanServer"
+  ],
+
+  "Smtp": {
+    "Server": "smtp.gmail.com",
+    "Port": 587,
+    "From": "alerts@company.com",
+    "To": "admin@company.com",
+    "Username": "alerts@company.com",
+    "Password": "APP_PASSWORD"
+  },
+
+  "TeamsWebhookUrl": "https://outlook.office.com/webhook/XXXX"
+}
