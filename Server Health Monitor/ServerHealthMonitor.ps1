@@ -1,24 +1,34 @@
-﻿# =====================================================
+# =====================================================
 # SERVER HEALTH MONITORING SCRIPT (ENTERPRISE GRADE)
 # =====================================================
 
 # -------- CONFIG LOAD --------
-$config = Get-Content ".\config.json" | ConvertFrom-Json
 $alerts = @()
 
-$ActivityLog = ".\logs\health.log"
-$ErrorLog    = ".\logs\error.log"
+$BasePath = $PSScriptRoot
 
+$configPath = Join-Path $BasePath "config.json"
+$logsPath   = Join-Path $BasePath "logs"
+$ActivityLog = Join-Path $logsPath "health.log"
+$ErrorLog    = Join-Path $logsPath "error.log"
+
+$config = Get-Content $configPath | ConvertFrom-Json
 
 # -------- FILE CREATIONS --------
 
-if(-not (Test-Path $ActivityLog)){
-    new-item -ItemType file -Path $ActivityLog
+if (-not (Test-Path $logsPath)) {
+    New-Item -ItemType Directory -Path $logsPath | Out-Null
 }
 
-if(-not (Test-Path $ErrorLog)){
-    new-item -ItemType file -Path $ErrorLog
+
+if (-not (Test-Path $ActivityLog)) {
+    New-Item -ItemType File -Path $ActivityLog | Out-Null
 }
+
+if (-not (Test-Path $ErrorLog)) {
+    New-Item -ItemType File -Path $ErrorLog | Out-Null
+}
+
 
 # -------- LOGGING FUNCTIONS --------
 
@@ -104,17 +114,25 @@ Catch {
 foreach ($service in $config.CriticalServices) {
     Try {
         $svc = Get-Service -Name $service -ErrorAction Stop
+
         if ($svc.Status -ne "Running") {
+
+            if ($svc.StartType -eq 'Disabled') {
+                Set-Service -Name $service -StartupType Automatic
+                Write-ActivityLog "Service $service startup type changed to Automatic."
+            }
+
             Start-Service -Name $service -ErrorAction Stop
             $alerts += "Service $service was down and restarted."
             Write-ActivityLog "Service $service restarted successfully."
         }
     }
     Catch {
-        $alerts += "Service $service failure detected."
+        $alerts += "Service $service could not be restarted."
         Write-ErrorLog -Component "Service Monitor - $service" -Exception $_.Exception
     }
 }
+
 
 # =====================================================
 # DFS SERVICE CHECK (NO dfsutil DEPENDENCY)
