@@ -1,7 +1,0 @@
-# Ignore logs
-logs/*
-!logs/.gitkeep
-
-# Ignore secrets
-config.json
-*.env
