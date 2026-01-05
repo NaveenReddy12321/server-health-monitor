@@ -1,22 +1,17 @@
 {
   "CpuThreshold": 80,
-  "MemoryThreshold": 80,
-  "DiskThreshold": 80,
-
-  "CriticalServices": [
-    "Spooler",
-    "DFS",
-    "LanmanServer"
-  ],
+  "MemoryThreshold": 85,
+  "DiskThreshold": 90,
+  "CriticalServices": ["Spooler", "W32Time", "LanmanServer"],
 
   "Smtp": {
-    "Server": "smtp.gmail.com",
+    "Server": "smtp.example.com",
     "Port": 587,
-    "From": "alerts@company.com",
-    "To": "admin@company.com",
-    "Username": "alerts@company.com",
-    "Password": "APP_PASSWORD"
+    "From": "alerts@example.com",
+    "To": "admin@example.com",
+    "Username": "alerts@example.com",
+    "Password": "REPLACE_WITH_SECRET"
   },
 
-  "TeamsWebhookUrl": "https://outlook.office.com/webhook/XXXX"
+  "TeamsWebhookUrl": "REPLACE_WITH_WEBHOOK"
 }
